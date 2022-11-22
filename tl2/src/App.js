@@ -1,24 +1,54 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import Summaries from './components/Summaries';
+import Countries from './components/Countries';
+import { getContries } from "./components/apis";
+import { useState, useEffect } from 'react'
+import { sortBy } from 'lodash'
+import { Container } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+const App=()=> {
 
-function App() {
+  const [countries, setCountries] = useState([])
+  const [valueCountry, setValueCountry] = useState('')
+
+  useEffect(() => { 
+    getContries().then((res) => {
+      console.log("quocGia", res);
+      const sortByCountries = sortBy(res.data, "Country");
+      setCountries(sortByCountries);
+      setValueCountry('vn')
+    });
+  }, [])
+  
+  const handleOnChange = (e) => { 
+    setValueCountry(e.target.value);
+  }
+
+  useEffect(() => {
+    if (valueCountry) {
+      const { Slug } = countries.find(
+        (country) => country.ISO2.toLowerCase() === valueCountry
+      );
+
+      // getReportByCountry(Slug).then((res) => {
+      //   // xóa đi item cuối trong array
+      //   res.data.pop();
+      //   setReport(res.data);
+      // });
+    }
+  }, [countries, valueCountry]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container>
+      <Typography variant="body1">Số Liệu Covid-19</Typography>
+      <Countries
+        countries={countries}
+        value={valueCountry}
+        handleOnChange={handleOnChange}
+      />
+      <Summaries />
+    </Container>
   );
 }
 
