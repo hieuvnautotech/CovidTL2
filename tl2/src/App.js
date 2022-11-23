@@ -1,29 +1,31 @@
-import React from 'react';
-import './App.css';
-import Summaries from './components/Summaries';
-import Countries from './components/Countries';
-import { getContries } from "./components/apis";
-import { useState, useEffect } from 'react'
-import { sortBy } from 'lodash'
+import React from "react";
+import "./App.css";
+import Summaries from "./components/Summaries";
+import Countries from "./components/Countries";
+import { getContries, getReportByCountry } from "./components/apis";
+import { useState, useEffect } from "react";
+import { sortBy } from "lodash";
 import { Container } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-const App=()=> {
+import Highlight from "./components/Highlights";
 
-  const [countries, setCountries] = useState([])
-  const [valueCountry, setValueCountry] = useState('')
+const App = () => {
+  const [countries, setCountries] = useState([]);
+  const [valueCountry, setValueCountry] = useState("");
+  const [report, setReport] = useState([]);
 
-  useEffect(() => { 
+  useEffect(() => {
     getContries().then((res) => {
       console.log("quocGia", res);
       const sortByCountries = sortBy(res.data, "Country");
       setCountries(sortByCountries);
-      setValueCountry('vn')
+      setValueCountry("vn");
     });
-  }, [])
-  
-  const handleOnChange = (e) => { 
+  }, []);
+
+  const handleOnChange = (e) => {
     setValueCountry(e.target.value);
-  }
+  };
 
   useEffect(() => {
     if (valueCountry) {
@@ -31,11 +33,11 @@ const App=()=> {
         (country) => country.ISO2.toLowerCase() === valueCountry
       );
 
-      // getReportByCountry(Slug).then((res) => {
-      //   // xóa đi item cuối trong array
-      //   res.data.pop();
-      //   setReport(res.data);
-      // });
+      getReportByCountry(Slug).then((res) => {
+        // xóa đi item cuối trong array
+        res.data.pop();
+        setReport(res.data);
+      });
     }
   }, [countries, valueCountry]);
 
@@ -47,9 +49,10 @@ const App=()=> {
         value={valueCountry}
         handleOnChange={handleOnChange}
       />
+      <Highlight report={report} />
       <Summaries />
     </Container>
   );
-}
+};
 
 export default App;
