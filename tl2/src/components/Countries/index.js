@@ -32,7 +32,9 @@ export default function Countries({ countries, value, handleOnChange }) {
           }}
         >
           {countries.map(({ Country, ISO2 }) => (
-            <option key={ISO2}>{Country}</option>
+            <option key={ISO2}
+              value={ISO2.toLowerCase()}
+            >{Country}</option>
           ))}
         </NativeSelect>
         <FormHelperText>Chọn quốc gia</FormHelperText>

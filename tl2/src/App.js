@@ -50,7 +50,7 @@ const App = () => {
         handleOnChange={handleOnChange}
       />
       <Highlight report={report} />
-      <Summaries />
+      <Summaries report={report}/>
     </Container>
   );
 };
